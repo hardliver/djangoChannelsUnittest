@@ -1,10 +1,14 @@
 # chat/consumers.py
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+import re
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        try:
+            self.room_name = self.scope['url_route']['kwargs']['room_name']
+        except:
+            self.room_name = re.findall('[a-zA-Z0-9]+',self.scope['path'])[-1]
         self.room_group_name = 'chat_%s' % self.room_name
 
         # Join room group
