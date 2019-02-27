@@ -1,6 +1,7 @@
 from channels.testing import WebsocketCommunicator
+from channels.routing import URLRouter
 
-from chat.consumers import ChatConsumer
+from chat.routing import websocket_urlpatterns
 
 import pytest
 import json
@@ -8,7 +9,8 @@ import json
 
 @pytest.mark.asyncio
 async def test_websocket_consumer():
-    communicator = WebsocketCommunicator(ChatConsumer, "/ws/chat/testws/")
+    application = URLRouter(websocket_urlpatterns)
+    communicator = WebsocketCommunicator(application, "/ws/chat/testws/")
     connected, subprotocol = await communicator.connect()
     assert connected
     # Test sending text
